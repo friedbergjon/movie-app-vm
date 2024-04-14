@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  movies_backend:
+    build:
+      context: ./movies
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"  # Expose backend port
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydatabase  # Replace with your MongoDB URI
+    depends_on:
+      - mongo  # Ensure MongoDB container is started first
+
+  mongo:
+    image: mongo:latest  # Use the latest MongoDB image
+    ports:
+      - "27017:27017"  # Expose MongoDB port
+    volumes:
+      - mongodb_data:/data/db  # Persist MongoDB data
+
+  movie-client:
+    build:
+      context: ./movie-client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"  # Expose frontend port
+
+volumes:
+  mongodb_data:
